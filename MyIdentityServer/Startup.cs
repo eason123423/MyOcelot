@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ContactService
+namespace MyIdentityServer
 {
     public class Startup
     {
@@ -26,25 +25,15 @@ namespace ContactService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApiVersioning(
-               options =>
-               {
-                    options.ReportApiVersions = true;
-               });
-            IdentityServerConfig identityServerConfig = new IdentityServerConfig();
-            Configuration.Bind("IdentityServerConfig", identityServerConfig);
-            services.AddAuthentication(identityServerConfig.IdentityScheme)
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.RequireHttpsMetadata = false;
-                    options.Authority = $"http://{identityServerConfig.IP}:{identityServerConfig.Port}";
-                    options.ApiName = identityServerConfig.ResourceName;
-                }
-               );
+            var section = Configuration.GetSection("SSOConfig");
+            services.AddIdentityServer()
+                .AddDeveloperSigningCredential()
+                .AddInMemoryApiResources(SSOConfig.GetApiResources(section))
+                .AddInMemoryClients(SSOConfig.GetClients(section));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ContactService", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyIdentityServer", Version = "v1" });
             });
         }
 
@@ -55,15 +44,12 @@ namespace ContactService
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ContactService v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyIdentityServer v1"));
             }
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            //app.UseAuthorization();
-            app.UseAuthentication();
+            app.UseIdentityServer();
 
             app.UseEndpoints(endpoints =>
             {

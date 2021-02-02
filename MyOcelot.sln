@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyOcelot", "MyOcelot\MyOcel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactService", "ContactService\ContactService.csproj", "{BE8269CC-173B-47C4-A581-0641A169FC50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyIdentityServer", "MyIdentityServer\MyIdentityServer.csproj", "{DE8235EC-91A1-435D-8908-12B1F7A97346}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BE8269CC-173B-47C4-A581-0641A169FC50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE8269CC-173B-47C4-A581-0641A169FC50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE8269CC-173B-47C4-A581-0641A169FC50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE8235EC-91A1-435D-8908-12B1F7A97346}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE8235EC-91A1-435D-8908-12B1F7A97346}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE8235EC-91A1-435D-8908-12B1F7A97346}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE8235EC-91A1-435D-8908-12B1F7A97346}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
