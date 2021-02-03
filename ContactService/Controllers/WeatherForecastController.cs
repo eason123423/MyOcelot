@@ -40,4 +40,18 @@ namespace ContactService.Controllers
             .ToArray();
         }
     }
+
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiController]
+    [Authorize]
+    public class IdentityController : ControllerBase
+    {
+        [HttpGet("getUserClaims")]
+        //[Authorize]
+        [Authorize(Roles = "admin")]
+        public IActionResult GetUserClaims()
+        {
+            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+        }
+    }
 }

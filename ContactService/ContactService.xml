@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ContactService</name>
+    </assembly>
+    <members>
+        <member name="T:ContactService.AuthorizeCheckOperationFilter">
+            <summary>
+            IdentityServer4认证过滤器
+            </summary>
+        </member>
+    </members>
+</doc>
