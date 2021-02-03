@@ -49,7 +49,7 @@ namespace ContactService
                 options.Authority = "http://localhost:5000";
                 options.RequireHttpsMetadata = false;
                 options.ApiName = "api1";
-                options.ApiSecret = "apipwd"; //对应ApiResources中的密钥
+                options.ApiSecret = "511536EF-F270-4058-80CA-1C89C192F69A"; //对应ApiResources中的密钥
             });
 
             services.AddControllers();

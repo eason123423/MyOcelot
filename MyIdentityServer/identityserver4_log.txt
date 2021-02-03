@@ -1,0 +1,129 @@
+2021-02-03 17:58:12.920 +08:00 [ERR] Failed executing DbCommand (45ms) [Parameters=[@p0='?' (Size = 100), @p1='?' (DbType = DateTime2), @p2='?' (Size = 1000), @p3='?' (Size = 200), @p4='?' (DbType = Boolean), @p5='?' (DbType = DateTime2), @p6='?' (Size = 200), @p7='?' (DbType = Boolean), @p8='?' (DbType = Boolean), @p9='?' (DbType = DateTime2), @p10='?' (Size = 100), @p11='?' (DbType = DateTime2), @p12='?' (Size = 1000), @p13='?' (Size = 200), @p14='?' (DbType = Boolean), @p15='?' (DbType = DateTime2), @p16='?' (Size = 200), @p17='?' (DbType = Boolean), @p18='?' (DbType = Boolean), @p19='?' (DbType = DateTime2), @p20='?' (Size = 100), @p21='?' (DbType = DateTime2), @p22='?' (Size = 1000), @p23='?' (Size = 200), @p24='?' (DbType = Boolean), @p25='?' (DbType = DateTime2), @p26='?' (Size = 200), @p27='?' (DbType = Boolean), @p28='?' (DbType = Boolean), @p29='?' (DbType = DateTime2), @p30='?' (Size = 100), @p31='?' (DbType = DateTime2), @p32='?' (Size = 1000), @p33='?' (Size = 200), @p34='?' (DbType = Boolean), @p35='?' (DbType = DateTime2), @p36='?' (Size = 200), @p37='?' (DbType = Boolean), @p38='?' (DbType = Boolean), @p39='?' (DbType = DateTime2), @p40='?' (Size = 100), @p41='?' (DbType = DateTime2), @p42='?' (Size = 1000), @p43='?' (Size = 200), @p44='?' (DbType = Boolean), @p45='?' (DbType = DateTime2), @p46='?' (Size = 200), @p47='?' (DbType = Boolean), @p48='?' (DbType = Boolean), @p49='?' (DbType = DateTime2)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+DECLARE @inserted0 TABLE ([Id] int, [_Position] [int]);
+MERGE [ApiResources] USING (
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, 0),
+(@p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, 1),
+(@p20, @p21, @p22, @p23, @p24, @p25, @p26, @p27, @p28, @p29, 2),
+(@p30, @p31, @p32, @p33, @p34, @p35, @p36, @p37, @p38, @p39, 3),
+(@p40, @p41, @p42, @p43, @p44, @p45, @p46, @p47, @p48, @p49, 4)) AS i ([AllowedAccessTokenSigningAlgorithms], [Created], [Description], [DisplayName], [Enabled], [LastAccessed], [Name], [NonEditable], [ShowInDiscoveryDocument], [Updated], _Position) ON 1=0
+WHEN NOT MATCHED THEN
+INSERT ([AllowedAccessTokenSigningAlgorithms], [Created], [Description], [DisplayName], [Enabled], [LastAccessed], [Name], [NonEditable], [ShowInDiscoveryDocument], [Updated])
+VALUES (i.[AllowedAccessTokenSigningAlgorithms], i.[Created], i.[Description], i.[DisplayName], i.[Enabled], i.[LastAccessed], i.[Name], i.[NonEditable], i.[ShowInDiscoveryDocument], i.[Updated])
+OUTPUT INSERTED.[Id], i._Position
+INTO @inserted0;
+
+SELECT [t].[Id] FROM [ApiResources] t
+INNER JOIN @inserted0 i ON ([t].[Id] = [i].[Id])
+ORDER BY [i].[_Position];
+2021-02-03 17:58:12.973 +08:00 [ERR] An exception occurred in the database while saving changes for context type 'IdentityServer4.EntityFramework.DbContexts.ConfigurationDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): 不能在具有唯一索引“IX_ApiResources_Name”的对象“dbo.ApiResources”中插入重复键的行。重复键值为 (api1)。
+语句已终止。
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TrySetMetaData(_SqlMetaDataSet metaData, Boolean moreInfo)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at Microsoft.Data.SqlClient.SqlDataReader.get_MetaData()
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean isAsync, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.ExecuteReader()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+ClientConnectionId:765eacf1-2f77-4150-b320-73e499dee66a
+Error Number:2601,State:1,Class:14
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(DbContext _, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while updating the entries. See the inner exception for details.
+ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): 不能在具有唯一索引“IX_ApiResources_Name”的对象“dbo.ApiResources”中插入重复键的行。重复键值为 (api1)。
+语句已终止。
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TrySetMetaData(_SqlMetaDataSet metaData, Boolean moreInfo)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlDataReader.TryConsumeMetaData()
+   at Microsoft.Data.SqlClient.SqlDataReader.get_MetaData()
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean isAsync, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.SqlClient.SqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at System.Data.Common.DbCommand.ExecuteReader()
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+ClientConnectionId:765eacf1-2f77-4150-b320-73e499dee66a
+Error Number:2601,State:1,Class:14
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(DbContext _, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+2021-02-03 17:59:28.088 +08:00 [INF] Starting IdentityServer4 version 4.1.1+cebd52f5bc61bdefc262fd20739d4d087c6f961f
+2021-02-03 17:59:28.112 +08:00 [INF] Using the default authentication scheme Identity.Application for IdentityServer
+2021-02-03 17:59:28.112 +08:00 [DBG] Using Identity.Application as default ASP.NET Core scheme for authentication
+2021-02-03 17:59:28.112 +08:00 [DBG] Using Identity.External as default ASP.NET Core scheme for sign-in
+2021-02-03 17:59:28.112 +08:00 [DBG] Using Identity.External as default ASP.NET Core scheme for sign-out
+2021-02-03 17:59:28.112 +08:00 [DBG] Using Identity.Application as default ASP.NET Core scheme for challenge
+2021-02-03 17:59:28.112 +08:00 [DBG] Using Identity.Application as default ASP.NET Core scheme for forbid
+2021-02-03 18:04:42.888 +08:00 [INF] Starting IdentityServer4 version 4.1.1+cebd52f5bc61bdefc262fd20739d4d087c6f961f
+2021-02-03 18:04:42.917 +08:00 [INF] Using the default authentication scheme Identity.Application for IdentityServer
+2021-02-03 18:04:42.917 +08:00 [DBG] Using Identity.Application as default ASP.NET Core scheme for authentication
+2021-02-03 18:04:42.917 +08:00 [DBG] Using Identity.External as default ASP.NET Core scheme for sign-in
+2021-02-03 18:04:42.917 +08:00 [DBG] Using Identity.External as default ASP.NET Core scheme for sign-out
+2021-02-03 18:04:42.917 +08:00 [DBG] Using Identity.Application as default ASP.NET Core scheme for challenge
+2021-02-03 18:04:42.917 +08:00 [DBG] Using Identity.Application as default ASP.NET Core scheme for forbid
+2021-02-03 18:04:53.476 +08:00 [DBG] Login Url: /Account/Login
+2021-02-03 18:04:53.477 +08:00 [DBG] Login Return Url Parameter: ReturnUrl
+2021-02-03 18:04:53.477 +08:00 [DBG] Logout Url: /Account/Logout
+2021-02-03 18:04:53.477 +08:00 [DBG] ConsentUrl Url: /consent
+2021-02-03 18:04:53.477 +08:00 [DBG] Consent Return Url Parameter: returnUrl
+2021-02-03 18:04:53.477 +08:00 [DBG] Error Url: /home/error
+2021-02-03 18:04:53.477 +08:00 [DBG] Error Id Parameter: errorId
+2021-02-03 18:06:24.629 +08:00 [INF] Starting IdentityServer4 version 4.1.1+cebd52f5bc61bdefc262fd20739d4d087c6f961f
+2021-02-03 18:06:24.657 +08:00 [INF] Using the default authentication scheme Identity.Application for IdentityServer
+2021-02-03 18:06:24.657 +08:00 [DBG] Using Identity.Application as default ASP.NET Core scheme for authentication
+2021-02-03 18:06:24.657 +08:00 [DBG] Using Identity.External as default ASP.NET Core scheme for sign-in
+2021-02-03 18:06:24.657 +08:00 [DBG] Using Identity.External as default ASP.NET Core scheme for sign-out
+2021-02-03 18:06:24.657 +08:00 [DBG] Using Identity.Application as default ASP.NET Core scheme for challenge
+2021-02-03 18:06:24.657 +08:00 [DBG] Using Identity.Application as default ASP.NET Core scheme for forbid
+2021-02-03 18:06:29.906 +08:00 [DBG] Login Url: /Account/Login
+2021-02-03 18:06:29.907 +08:00 [DBG] Login Return Url Parameter: ReturnUrl
+2021-02-03 18:06:29.907 +08:00 [DBG] Logout Url: /Account/Logout
+2021-02-03 18:06:29.907 +08:00 [DBG] ConsentUrl Url: /consent
+2021-02-03 18:06:29.907 +08:00 [DBG] Consent Return Url Parameter: returnUrl
+2021-02-03 18:06:29.907 +08:00 [DBG] Error Url: /home/error
+2021-02-03 18:06:29.907 +08:00 [DBG] Error Id Parameter: errorId
+2021-02-03 18:07:15.754 +08:00 [DBG] Request path /.well-known/openid-configuration matched to endpoint type Discovery
+2021-02-03 18:07:15.756 +08:00 [DBG] Endpoint enabled: Discovery, successfully created handler: IdentityServer4.Endpoints.DiscoveryEndpoint
+2021-02-03 18:07:15.756 +08:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.DiscoveryEndpoint for /.well-known/openid-configuration
+2021-02-03 18:07:15.757 +08:00 [DBG] Start discovery request
+2021-02-03 18:07:15.873 +08:00 [WRN] Compiling a query which loads related collections for more than one collection navigation either via 'Include' or through projection but no 'QuerySplittingBehavior' has been configured. By default Entity Framework will use 'QuerySplittingBehavior.SingleQuery' which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'
+2021-02-03 18:07:16.014 +08:00 [WRN] Compiling a query which loads related collections for more than one collection navigation either via 'Include' or through projection but no 'QuerySplittingBehavior' has been configured. By default Entity Framework will use 'QuerySplittingBehavior.SingleQuery' which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'
+2021-02-03 18:07:16.040 +08:00 [WRN] Compiling a query which loads related collections for more than one collection navigation either via 'Include' or through projection but no 'QuerySplittingBehavior' has been configured. By default Entity Framework will use 'QuerySplittingBehavior.SingleQuery' which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'
+2021-02-03 18:07:16.469 +08:00 [DBG] Found ["locations","roles","phone","address","email","profile","openid","productservice","clientservice","agentservice","password_scope1"] as all scopes, and ["agentservice","productservice","clientservice","api1","api2"] as API resources
+2021-02-03 18:07:20.193 +08:00 [DBG] Request path /.well-known/openid-configuration matched to endpoint type Discovery
+2021-02-03 18:07:20.193 +08:00 [DBG] Endpoint enabled: Discovery, successfully created handler: IdentityServer4.Endpoints.DiscoveryEndpoint
+2021-02-03 18:07:20.194 +08:00 [INF] Invoking IdentityServer endpoint: IdentityServer4.Endpoints.DiscoveryEndpoint for /.well-known/openid-configuration
+2021-02-03 18:07:20.194 +08:00 [DBG] Start discovery request
+2021-02-03 18:07:20.200 +08:00 [DBG] Found ["locations","roles","phone","address","email","profile","openid","productservice","clientservice","agentservice","password_scope1"] as all scopes, and ["agentservice","productservice","clientservice","api1","api2"] as API resources
