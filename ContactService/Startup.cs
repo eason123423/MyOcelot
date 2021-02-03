@@ -1,3 +1,4 @@
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,8 +10,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -33,22 +36,53 @@ namespace ContactService
             services.AddApiVersioning(
                options =>
                {
-                    options.ReportApiVersions = true;
+                   options.ReportApiVersions = true;
                });
-            //IdentityServerConfig identityServerConfig = new IdentityServerConfig();
-            //Configuration.Bind("IdentityServerConfig", identityServerConfig);
-            //services.AddAuthentication(identityServerConfig.IdentityScheme)
-            //    .AddIdentityServerAuthentication(options =>
-            //    {
-            //        options.RequireHttpsMetadata = false;
-            //        options.Authority = $"http://{identityServerConfig.IP}:{identityServerConfig.Port}";
-            //        options.ApiName = identityServerConfig.ResourceName;
-            //    }
-            //   );
+            JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+            })
+            .AddCookie("Cookies")
+            .AddOpenIdConnect("oidc", options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.Authority = "http://localhost:5000";
+                options.ClientId = "credentials_client";
+                options.ClientSecret = "secret";
+                options.ResponseType = "code";
+                options.SaveTokens = true;
+                options.Scope.Add("goods");
+                options.GetClaimsFromUserInfoEndpoint = true;
+                //事件
+                options.Events = new Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectEvents()
+                {
+                    //远程故障
+                    OnRemoteFailure = context =>
+                    {
+                        context.Response.Redirect("/");
+                        context.HandleResponse();
+                        return Task.FromResult(0);
+                    },
+                    //访问拒绝
+                    OnAccessDenied = context =>
+                    {
+                        //重定向到指定页面
+                        context.Response.Redirect("/");
+                        //停止此请求的所有处理并返回给客户端
+                        context.HandleResponse();
+                        return Task.FromResult(0);
+                    },
+                };
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ContactService", Version = "v1" });
+                c.OperationFilter<AuthorizeCheckOperationFilter>(); // 添加IdentityServer4认证过滤
             });
         }
 
@@ -65,8 +99,7 @@ namespace ContactService
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            //app.UseAuthorization();
+            app.UseAuthorization();
             app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>

@@ -20,7 +20,7 @@ namespace MyIdentityServer
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>().UseUrls("http://0.0.0.0:8005"); ;
+                    webBuilder.UseStartup<Startup>().UseUrls("http://0.0.0.0:5000");
                 });
     }
 }

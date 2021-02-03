@@ -11,17 +11,17 @@ namespace ContactService.Controllers
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    [Authorize(Roles = "admin")]
-    public class WeatherForecastController : ControllerBase
+    [Authorize]
+    public class GoodsServiceController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<GoodsServiceController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public GoodsServiceController(ILogger<GoodsServiceController> logger)
         {
             _logger = logger;
         }

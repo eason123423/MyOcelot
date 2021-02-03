@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MMLib.Ocelot.Provider.AppConfiguration;
-using MyOcelot.Authentication.JWT;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Swashbuckle.AspNetCore.Filters;
@@ -100,61 +99,7 @@ namespace MyOcelot
                 var xmlPath = Path.Combine(basePath, "MyOcelot.xml");
                 c.IncludeXmlComments(xmlPath);
             });
-
-            services.Configure<JwtTokenOptions>(Configuration.GetSection("JwtTokenOptions"));
-            JwtTokenOptions tokenOptions = Configuration.GetSection("JwtTokenOptions").Get<JwtTokenOptions>();
-            #region jwt验证
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer(options =>
-                    {
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
-                            ValidateIssuer = true,//是否验证Issuer
-                            ValidateAudience = true,//是否验证Audience
-                            ValidateLifetime = true,//是否验证失效时间
-                            ClockSkew = TimeSpan.FromSeconds(30),
-                            ValidateIssuerSigningKey = true,//是否验证SecurityKey
-                            ValidIssuer = tokenOptions.Issuer,
-                            ValidAudience = tokenOptions.Audience,
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenOptions.SigningKey))
-                        };
-                        #region 自定义Jwt的token验证
-                        options.SecurityTokenValidators.Clear();//将SecurityTokenValidators清除掉，否则它会在里面拿验证
-                        options.SecurityTokenValidators.Add(new MyTokenValidator()); //自定义的MyTokenValidator验证方法
-                        options.Events = new JwtBearerEvents
-                        {
-                            //重写OnMessageReceived
-                            OnMessageReceived = context =>
-                            {
-                                var token = context.Request.Headers["Authorization"];
-                                string jwtToken = AESCryptoHelper.Decrypt(token.FirstOrDefault());
-                                context.Token = jwtToken;
-                                if (context.Token == null)
-                                {
-                                    context.Fail("鉴权失败");
-                                }
-                                return Task.CompletedTask;
-                            },
-                            OnTokenValidated = context =>
-                            {
-                                try
-                                {
-                                    ClaimsPrincipal identity = context.Principal;
-                                }
-                                catch (Exception ee)
-                                {
-                                    context.Fail("鉴权失败:" + ee.Message);
-                                }
-                                return Task.CompletedTask;
-                            }
-                        };
-                        #endregion
-
-                    });
-            #endregion
-            services.AddSingleton<TokenBuilder>();
         }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
