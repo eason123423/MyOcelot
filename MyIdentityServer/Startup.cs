@@ -60,9 +60,17 @@ namespace MyIdentityServer
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.User.RequireUniqueEmail = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
             var builder = services.AddIdentityServer(options =>
             {
@@ -70,6 +78,19 @@ namespace MyIdentityServer
                 options.Events.RaiseInformationEvents = true;
                 options.Events.RaiseFailureEvents = true;
                 options.Events.RaiseSuccessEvents = true;
+                options.UserInteraction = new IdentityServer4.Configuration.UserInteractionOptions
+                {
+                    LoginUrl = "/Account/Login",
+                    LogoutUrl = "/Account/Logout",
+                    ConsentUrl = "/Account/Consent",
+                    ErrorUrl = "/Account/Error",
+                    LoginReturnUrlParameter = "ReturnUrl",
+                    LogoutIdParameter = "logoutId",
+                    ConsentReturnUrlParameter = "ReturnUrl",
+                    ErrorIdParameter = "errorId",
+                    CustomRedirectReturnUrlParameter = "ReturnUrl",
+                    CookieMessageThreshold = 5
+                };
             })
             .AddConfigurationStore(options =>
             {
@@ -89,6 +110,7 @@ namespace MyIdentityServer
             });
             builder.AddDeveloperSigningCredential();
             services.AddAuthentication();
+
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

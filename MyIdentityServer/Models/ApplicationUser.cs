@@ -8,5 +8,6 @@ namespace MyIdentityServer.Models
 {
     public class ApplicationUser : IdentityUser
     {
+        public override string Id { get => base.Id; set => base.Id = Guid.NewGuid().ToString(); }
     }
 }
